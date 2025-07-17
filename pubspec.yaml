@@ -53,6 +53,9 @@ dependencies:
   
   # Utilities
   dartz: ^0.10.1
+  
+  # Supabase
+  supabase_flutter: ^2.5.6
 
 dev_dependencies:
   flutter_test:
