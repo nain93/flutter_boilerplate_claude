@@ -1,5 +1,5 @@
 import 'package:injectable/injectable.dart';
-import '../../../../core/network/api_service.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import '../models/user_model.dart';
 
 abstract class UserRemoteDataSource {
@@ -9,17 +9,29 @@ abstract class UserRemoteDataSource {
 
 @Injectable(as: UserRemoteDataSource)
 class UserRemoteDataSourceImpl implements UserRemoteDataSource {
-  final ApiService apiService;
+  final SupabaseClient supabaseClient;
   
-  UserRemoteDataSourceImpl(this.apiService);
+  UserRemoteDataSourceImpl(this.supabaseClient);
   
   @override
   Future<List<UserModel>> getUsers() async {
-    return await apiService.getUsers();
+    final response = await supabaseClient
+        .from('users')
+        .select();
+    
+    return (response as List)
+        .map((json) => UserModel.fromJson(json))
+        .toList();
   }
   
   @override
   Future<UserModel> getUserById(int id) async {
-    return await apiService.getUserById(id);
+    final response = await supabaseClient
+        .from('users')
+        .select()
+        .eq('id', id)
+        .single();
+    
+    return UserModel.fromJson(response);
   }
 }

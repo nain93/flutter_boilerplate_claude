@@ -1,26 +1,29 @@
 import 'package:dio/dio.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_boilerplate_claude/features/content/data/datasources/content_remote_datasource.dart';
+import 'package:flutter_boilerplate_claude/features/content/domain/usecases/get_content_by_id.dart';
+import 'package:flutter_boilerplate_claude/features/content/domain/usecases/get_contents.dart';
 import 'package:get_it/get_it.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import '../config/supabase_config.dart';
-import '../network/api_service.dart';
-import '../network/dio_client.dart';
-import '../network/network_info.dart';
-import '../../features/counter/data/datasources/counter_local_datasource.dart';
-import '../../features/counter/data/repositories/counter_repository_impl.dart';
-import '../../features/counter/domain/repositories/counter_repository.dart';
-import '../../features/counter/domain/usecases/get_counter.dart';
-import '../../features/counter/domain/usecases/increment_counter.dart';
-import '../../features/counter/presentation/bloc/counter_bloc.dart';
-import '../../features/users/data/datasources/user_remote_datasource.dart';
-import '../../features/users/data/repositories/user_repository_impl.dart';
-import '../../features/users/domain/repositories/user_repository.dart';
-import '../../features/users/domain/usecases/get_users.dart';
-import '../../features/users/domain/usecases/get_user_by_id.dart';
-import '../../features/users/presentation/bloc/users_bloc.dart';
+import 'package:flutter_boilerplate_claude/core/config/supabase_config.dart';
+import 'package:flutter_boilerplate_claude/core/network/dio_client.dart';
+import 'package:flutter_boilerplate_claude/core/network/network_info.dart';
+import 'package:flutter_boilerplate_claude/features/content/data/repositories/content_repository_impl.dart';
+import 'package:flutter_boilerplate_claude/features/content/domain/repositories/content_repository.dart';
+import 'package:flutter_boilerplate_claude/features/content/presentation/bloc/content_bloc.dart';
+import 'package:flutter_boilerplate_claude/features/users/data/datasources/user_remote_datasource.dart';
+import 'package:flutter_boilerplate_claude/features/users/data/repositories/user_repository_impl.dart';
+import 'package:flutter_boilerplate_claude/features/users/domain/repositories/user_repository.dart';
+import 'package:flutter_boilerplate_claude/features/users/domain/usecases/get_users.dart';
+import 'package:flutter_boilerplate_claude/features/users/domain/usecases/get_user_by_id.dart';
+import 'package:flutter_boilerplate_claude/features/users/presentation/bloc/users_bloc.dart';
 
 final sl = GetIt.instance;
 
 Future<void> initializeDependencies() async {
+  // Load environment variables
+  await dotenv.load(fileName: ".env");
+  
   // Supabase
   await Supabase.initialize(
     url: SupabaseConfig.url,
@@ -32,32 +35,31 @@ Future<void> initializeDependencies() async {
   sl.registerLazySingleton(() => DioClient());
   sl.registerLazySingleton<Dio>(() => sl<DioClient>().dio);
   sl.registerLazySingleton<NetworkInfo>(() => NetworkInfoImpl());
-  sl.registerLazySingleton(() => ApiService(sl()));
 
-  // Counter feature
+  // Content feature
   // Data sources
-  sl.registerLazySingleton<CounterLocalDataSource>(
-    () => CounterLocalDataSourceImpl(),
+  sl.registerLazySingleton<ContentRemoteDataSource>(
+    () => ContentRemoteDataSourceImpl(sl<SupabaseClient>()),
   );
 
   // Repositories
-  sl.registerLazySingleton<CounterRepository>(
-    () => CounterRepositoryImpl(sl()),
+  sl.registerLazySingleton<ContentRepository>(
+    () => ContentRepositoryImpl(remoteDataSource: sl(), networkInfo: sl()),
   );
 
   // Use cases
-  sl.registerLazySingleton(() => GetCounter(sl()));
-  sl.registerLazySingleton(() => IncrementCounter(sl()));
+  sl.registerLazySingleton(() => GetContents(sl()));
+  sl.registerLazySingleton(() => GetContentById(sl()));
 
   // BLoC
   sl.registerFactory(
-    () => CounterBloc(getCounter: sl(), incrementCounter: sl()),
+    () => ContentBloc(getContents: sl(), getContentById: sl()),
   );
 
   // Users feature
   // Data sources
   sl.registerLazySingleton<UserRemoteDataSource>(
-    () => UserRemoteDataSourceImpl(sl()),
+    () => UserRemoteDataSourceImpl(sl<SupabaseClient>()),
   );
 
   // Repositories

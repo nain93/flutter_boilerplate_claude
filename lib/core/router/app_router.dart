@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import '../../features/counter/presentation/pages/counter_page.dart';
+import '../../features/content/presentation/pages/content_page.dart';
 import '../../features/users/presentation/pages/users_page.dart';
 import '../navigation/bottom_navigation_shell.dart';
 import '../pages/home_page.dart';
@@ -8,7 +8,7 @@ import '../pages/profile_page.dart';
 
 enum AppRoutes {
   home,
-  counter,
+  content,
   users,
   profile;
 
@@ -51,9 +51,9 @@ class AppRouter {
             builder: (context, state) => const HomePage(),
           ),
           GoRoute(
-            path: AppRoutes.counter.fullPath,
-            name: AppRoutes.counter.path,
-            builder: (context, state) => const CounterPage(),
+            path: AppRoutes.content.fullPath,
+            name: AppRoutes.content.path,
+            builder: (context, state) => const ContentPage(),
           ),
           GoRoute(
             path: AppRoutes.users.fullPath,

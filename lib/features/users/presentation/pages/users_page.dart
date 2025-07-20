@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/di/manual_injection.dart';
+import '../../../../core/widgets/error_widget.dart';
 import '../bloc/users_bloc.dart';
 import '../bloc/users_event.dart';
 import '../bloc/users_state.dart';
@@ -49,30 +50,12 @@ class _UsersBody extends StatelessWidget {
           userLoaded: (user) => Center(
             child: UserListItem(user: user),
           ),
-          error: (message) => Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  Icons.error_outline,
-                  size: 64,
-                  color: Colors.red[300],
-                ),
-                const SizedBox(height: 16),
-                Text(
-                  'Error: $message',
-                  style: const TextStyle(color: Colors.red),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 16),
-                ElevatedButton(
-                  onPressed: () {
-                    context.read<UsersBloc>().add(const UsersEvent.getUsers());
-                  },
-                  child: const Text('Retry'),
-                ),
-              ],
-            ),
+          error: (message) => AppErrorWidget(
+            title: 'Failed to load users',
+            message: message,
+            onRetry: () {
+              context.read<UsersBloc>().add(const UsersEvent.getUsers());
+            },
           ),
         );
       },

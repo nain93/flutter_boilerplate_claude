@@ -17,7 +17,7 @@ class BottomNavigationShell extends StatelessWidget {
         onTap: (index) => _onTap(context, index),
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-          BottomNavigationBarItem(icon: Icon(Icons.add), label: 'Counter'),
+          BottomNavigationBarItem(icon: Icon(Icons.photo_library), label: 'Content'),
           BottomNavigationBarItem(icon: Icon(Icons.people), label: 'Users'),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
         ],
@@ -47,7 +47,7 @@ class BottomNavigationShell extends StatelessWidget {
         context.go(AppRoutes.home.fullPath);
         break;
       case 1:
-        context.go(AppRoutes.counter.fullPath);
+        context.go(AppRoutes.content.fullPath);
         break;
       case 2:
         context.go(AppRoutes.users.fullPath);
