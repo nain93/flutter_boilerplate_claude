@@ -5,5 +5,5 @@ part 'users_event.freezed.dart';
 @freezed
 class UsersEvent with _$UsersEvent {
   const factory UsersEvent.getUsers() = GetUsersEvent;
-  const factory UsersEvent.getUserById(int userId) = GetUserByIdEvent;
+  const factory UsersEvent.getUserById(String userId) = GetUserByIdEvent;
 }

@@ -4,7 +4,7 @@ import '../models/user_model.dart';
 
 abstract class UserRemoteDataSource {
   Future<List<UserModel>> getUsers();
-  Future<UserModel> getUserById(int id);
+  Future<UserModel> getUserById(String id);
 }
 
 @Injectable(as: UserRemoteDataSource)
@@ -25,7 +25,7 @@ class UserRemoteDataSourceImpl implements UserRemoteDataSource {
   }
   
   @override
-  Future<UserModel> getUserById(int id) async {
+  Future<UserModel> getUserById(String id) async {
     final response = await supabaseClient
         .from('users')
         .select()

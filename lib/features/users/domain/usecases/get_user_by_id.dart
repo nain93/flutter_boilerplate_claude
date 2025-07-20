@@ -6,13 +6,13 @@ import '../entities/user.dart';
 import '../repositories/user_repository.dart';
 
 @injectable
-class GetUserById implements UseCase<User, int> {
+class GetUserById implements UseCase<User, String> {
   final UserRepository repository;
   
   GetUserById(this.repository);
   
   @override
-  Future<Either<Failure, User>> call(int id) async {
+  Future<Either<Failure, User>> call(String id) async {
     return await repository.getUserById(id);
   }
 }

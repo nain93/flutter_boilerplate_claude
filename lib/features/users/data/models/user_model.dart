@@ -7,39 +7,48 @@ part 'user_model.g.dart';
 @freezed
 class UserModel with _$UserModel {
   const UserModel._();
-  
+
   const factory UserModel({
-    required int id,
+    required String id,
     required String name,
-    required String username,
     required String email,
-    required String phone,
-    required String website,
+    @JsonKey(name: 'avatar_url') String? avatarUrl,
+    String? bio,
+    String? location,
+    String? website,
+    @JsonKey(name: 'created_at') String? createdAt,
+    @JsonKey(name: 'updated_at') String? updatedAt,
   }) = _UserModel;
-  
+
   factory UserModel.fromJson(Map<String, dynamic> json) =>
       _$UserModelFromJson(json);
-  
+
   factory UserModel.fromEntity(User user) {
     return UserModel(
       id: user.id,
       name: user.name,
-      username: user.username,
       email: user.email,
-      phone: user.phone,
+      avatarUrl: user.avatarUrl,
+      bio: user.bio,
+      location: user.location,
       website: user.website,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
     );
   }
-  
+
   // UserModel을 User 엔티티로 변환
   User toEntity() {
     return User(
       id: id,
       name: name,
-      username: username,
       email: email,
-      phone: phone,
+      avatarUrl: avatarUrl,
+      bio: bio,
+      location: location,
       website: website,
+      createdAt: createdAt,
+      updatedAt: updatedAt,
     );
   }
 }

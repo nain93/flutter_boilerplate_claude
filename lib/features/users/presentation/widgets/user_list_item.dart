@@ -28,10 +28,10 @@ class UserListItem extends StatelessWidget {
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('@${user.username}'),
             Text(user.email),
-            if (user.phone.isNotEmpty) Text('📞 ${user.phone}'),
-            if (user.website.isNotEmpty) Text('🌐 ${user.website}'),
+            if (user.bio != null && user.bio!.isNotEmpty) Text(user.bio!),
+            if (user.location != null && user.location!.isNotEmpty) Text('📍 ${user.location!}'),
+            if (user.website != null && user.website!.isNotEmpty) Text('🌐 ${user.website!}'),
           ],
         ),
         isThreeLine: true,
@@ -51,10 +51,10 @@ class UserListItem extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildDetailRow('Username', user.username),
             _buildDetailRow('Email', user.email),
-            _buildDetailRow('Phone', user.phone),
-            _buildDetailRow('Website', user.website),
+            if (user.bio != null) _buildDetailRow('Bio', user.bio!),
+            if (user.location != null) _buildDetailRow('Location', user.location!),
+            if (user.website != null) _buildDetailRow('Website', user.website!),
           ],
         ),
         actions: [
@@ -67,7 +67,7 @@ class UserListItem extends StatelessWidget {
     );
   }
   
-  Widget _buildDetailRow(String label, String value) {
+  Widget _buildDetailRow(String label, String? value) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
@@ -80,7 +80,7 @@ class UserListItem extends StatelessWidget {
               style: const TextStyle(fontWeight: FontWeight.bold),
             ),
           ),
-          Expanded(child: Text(value)),
+          Expanded(child: Text(value ?? '')),
         ],
       ),
     );

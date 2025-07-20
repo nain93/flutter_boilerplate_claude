@@ -30,7 +30,7 @@ class ContentListItem extends StatelessWidget {
                 child: AspectRatio(
                   aspectRatio: 16 / 9,
                   child: Image.network(
-                    content.imageUrl,
+                    content.featuredImageUrl ?? 'https://via.placeholder.com/400x225?text=No+Image',
                     fit: BoxFit.cover,
                     errorBuilder: (context, error, stackTrace) {
                       return Container(
@@ -69,7 +69,7 @@ class ContentListItem extends StatelessWidget {
               
               // Content Description
               Text(
-                content.description,
+                content.excerpt ?? content.body,
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                   color: Colors.grey[600],
                 ),
@@ -86,8 +86,8 @@ class ContentListItem extends StatelessWidget {
                     radius: 12,
                     backgroundColor: Theme.of(context).primaryColor,
                     child: Text(
-                      content.authorName.isNotEmpty 
-                          ? content.authorName[0].toUpperCase()
+                      content.authorId != null && content.authorId!.isNotEmpty 
+                          ? content.authorId![0].toUpperCase()
                           : 'A',
                       style: const TextStyle(
                         fontSize: 12,
@@ -98,7 +98,7 @@ class ContentListItem extends StatelessWidget {
                   ),
                   const SizedBox(width: 8),
                   Text(
-                    content.authorName,
+                    content.authorId ?? 'Anonymous',
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
                       fontWeight: FontWeight.w500,
                     ),
@@ -111,14 +111,14 @@ class ContentListItem extends StatelessWidget {
                       const Icon(Icons.favorite_outline, size: 16, color: Colors.grey),
                       const SizedBox(width: 4),
                       Text(
-                        _formatNumber(content.likes),
+                        _formatNumber(content.likeCount),
                         style: Theme.of(context).textTheme.bodySmall,
                       ),
                       const SizedBox(width: 12),
                       const Icon(Icons.visibility_outlined, size: 16, color: Colors.grey),
                       const SizedBox(width: 4),
                       Text(
-                        _formatNumber(content.views),
+                        _formatNumber(content.viewCount),
                         style: Theme.of(context).textTheme.bodySmall,
                       ),
                     ],
@@ -178,20 +178,27 @@ class ContentListItem extends StatelessWidget {
     return number.toString();
   }
 
-  String _formatDate(DateTime date) {
-    final now = DateTime.now();
-    final difference = now.difference(date);
+  String _formatDate(String? dateString) {
+    if (dateString == null) return '';
+    
+    try {
+      final date = DateTime.parse(dateString);
+      final now = DateTime.now();
+      final difference = now.difference(date);
 
-    if (difference.inDays > 30) {
-      return '${date.day}/${date.month}/${date.year}';
-    } else if (difference.inDays > 0) {
-      return '${difference.inDays}d ago';
-    } else if (difference.inHours > 0) {
-      return '${difference.inHours}h ago';
-    } else if (difference.inMinutes > 0) {
-      return '${difference.inMinutes}m ago';
-    } else {
-      return 'Just now';
+      if (difference.inDays > 30) {
+        return '${date.day}/${date.month}/${date.year}';
+      } else if (difference.inDays > 0) {
+        return '${difference.inDays}d ago';
+      } else if (difference.inHours > 0) {
+        return '${difference.inHours}h ago';
+      } else if (difference.inMinutes > 0) {
+        return '${difference.inMinutes}m ago';
+      } else {
+        return 'Just now';
+      }
+    } catch (e) {
+      return dateString; // Return the original string if parsing fails
     }
   }
 }

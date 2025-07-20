@@ -32,7 +32,7 @@ class UserRepositoryImpl implements UserRepository {
   }
   
   @override
-  Future<Either<Failure, User>> getUserById(int id) async {
+  Future<Either<Failure, User>> getUserById(String id) async {
     if (await networkInfo.isConnected) {
       try {
         final userModel = await remoteDataSource.getUserById(id);
